@@ -1,19 +1,33 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Habit } from './entities/habit.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateHabitDto } from 'src/common/dto/create-habit.dto';
 import { UpdateHabitDto } from 'src/common/dto/update-habit.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class HabitsService {
   constructor(
     @InjectRepository(Habit)
     private readonly habitRepository: Repository<Habit>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async create(createHabitDto: CreateHabitDto): Promise<Habit> {
-    const habit = this.habitRepository.create(createHabitDto);
+    const user = await this.userRepository.findOne({
+      where: { id: createHabitDto.userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const habit = this.habitRepository.create({
+      ...createHabitDto,
+      user,
+    });
     return this.habitRepository.save(habit);
   }
 
@@ -36,5 +50,9 @@ export class HabitsService {
 
   async delete(id: string): Promise<void> {
     await this.habitRepository.delete(id);
+  }
+
+  async deleteMany(ids: string[]): Promise<void> {
+    await this.habitRepository.delete({ id: In(ids) });
   }
 }

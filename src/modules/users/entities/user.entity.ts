@@ -1,5 +1,6 @@
 import { Habit } from 'src/modules/habits/entities/habit.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from './roleEnum';
 
 @Entity()
 export class User {
@@ -14,6 +15,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column('enum', { enum: Role, array: true, default: [] })
+  roles: string[];
 
   @OneToMany(() => Habit, (habit) => habit.user)
   habits: Habit[];
