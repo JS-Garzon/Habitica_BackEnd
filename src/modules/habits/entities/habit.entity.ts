@@ -1,6 +1,6 @@
-import { Goal } from 'src/modules/goal/entities/goal.entity';
-import { HabitHistory } from 'src/modules/habit-history/entities/habit-history.entity';
-import { User } from 'src/modules/users/entities/user.entity';
+import { Goal } from '../../goal/entities/goal.entity';
+import { HabitHistory } from '../../habit-history/entities/habit-history.entity';
+import { User } from '../../users/entities/user.entity';
 import {
   Column,
   Entity,

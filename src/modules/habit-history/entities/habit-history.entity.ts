@@ -1,4 +1,4 @@
-import { Habit } from 'src/modules/habits/entities/habit.entity';
+import { Habit } from '../../habits/entities/habit.entity';
 import {
   Column,
   CreateDateColumn,
