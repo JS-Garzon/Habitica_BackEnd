@@ -30,26 +30,8 @@ jobs:
           npm install
           npm run build --if-present
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-app
-          path: .  # Cambia esto si quieres solo subir los archivos necesarios
-          
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write  # Esto es necesario para solicitar el JWT
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: node-app
+      - name: Enable debug logging
+        run: echo "##[debug] true"
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -58,6 +40,25 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_855224B070AD4EC0947FA45F81B59B37 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ADAFE4991F8F4BFCB95E2BA33B1DF30D }}
 
+      - name: Compress build folder
+        run: zip -r app.zip ./*  # Comprime todos los archivos del directorio actual
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Stop Azure Web App
+        run: az webapp stop --name Habitica --resource-group HabiticaProyect
+
+      - name: Clean Azure Web App folder
+        run: az webapp delete --name Habitica --resource-group HabiticaProyect
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -65,4 +66,8 @@ jobs:
           app-name: 'Habitica'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
+          package: app.zip
+        timeout-minutes: 15 
+
+      - name: Start Azure Web App
+        run: az webapp start --name Habitica --resource-group HabiticaProyect
