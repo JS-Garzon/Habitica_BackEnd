@@ -9,6 +9,8 @@ async function bootstrap() {
     credentials: true,
   });
   //new port
+  console.log('DB_HOST:', process.env.DATABASE_HOST); // Reemplaza 'DB_HOST' con el nombre de tu variable
+  console.log('DB_PORT:', process.env.DATABASE_PORT);
   const port = process.env.PORT || 8080;
   await app.listen(port);
 }
