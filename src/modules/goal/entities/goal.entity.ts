@@ -12,7 +12,7 @@ export class Goal {
   @Column('text', { nullable: true })
   description: string;
 
-  @OneToMany(() => Habit, (habit) => habit.goals)
+  @OneToMany(() => Habit, (habit) => habit.goal)
   habit: Habit;
 
   @Column({ type: 'timestamp' })
