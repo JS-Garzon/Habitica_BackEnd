@@ -30,5 +30,5 @@ export class Habit {
   history: HabitHistory[];
 
   @ManyToOne(() => Goal, (goal) => goal.habit, { onDelete: 'CASCADE' })
-  goals: Goal[];
+  goal: Goal[];
 }
