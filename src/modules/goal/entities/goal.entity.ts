@@ -1,5 +1,5 @@
 import { Habit } from '../../habits/entities/habit.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Goal {
@@ -12,7 +12,7 @@ export class Goal {
   @Column('text', { nullable: true })
   description: string;
 
-  @ManyToOne(() => Habit, (habit) => habit.goals, { onDelete: 'CASCADE' })
+  @OneToMany(() => Habit, (habit) => habit.goals)
   habit: Habit;
 
   @Column({ type: 'timestamp' })
