@@ -29,6 +29,6 @@ export class Habit {
   @OneToMany(() => HabitHistory, (history) => history.habit, { cascade: true })
   history: HabitHistory[];
 
-  @ManyToOne(() => Goal, (goal) => goal.habit, { onDelete: 'CASCADE' })
-  goal: Goal[];
+  @ManyToOne(() => Goal, (goal) => goal.habits, { onDelete: 'CASCADE' })
+  goal: Goal;
 }

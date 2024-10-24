@@ -12,8 +12,8 @@ export class Goal {
   @Column('text', { nullable: true })
   description: string;
 
-  @OneToMany(() => Habit, (habit) => habit.goal)
-  habit: Habit;
+  @OneToMany(() => Habit, (habit) => habit.goal, { cascade: true })
+  habits: Habit[];
 
   @Column({ type: 'timestamp' })
   startDate: Date;

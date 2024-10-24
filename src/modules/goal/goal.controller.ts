@@ -10,6 +10,7 @@ import {
 import { GoalService } from './goal.service';
 import { CreateGoalDto } from 'src/common/dto/create-goal.dto';
 import { UpdateGoalDto } from 'src/common/dto/update-goal.dto';
+import { Goal } from './entities/goal.entity';
 
 @Controller('goals')
 export class GoalController {
@@ -21,8 +22,9 @@ export class GoalController {
   }
 
   @Get()
-  findAll() {
-    return this.goalService.findAll();
+  async findAll(): Promise<Omit<Goal, 'habits'>[]> {
+    const goals = await this.goalService.findAll();
+    return goals.map(({ habits, ...rest }) => rest);
   }
 
   @Get(':id')

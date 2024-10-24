@@ -5,6 +5,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
+import { Goal } from 'src/modules/goal/entities/goal.entity';
 
 export class CreateHabitDto {
   @IsString()
@@ -22,4 +23,8 @@ export class CreateHabitDto {
   @IsString()
   @IsNotEmpty()
   readonly userId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly goal: Goal;
 }

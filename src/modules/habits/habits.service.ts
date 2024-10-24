@@ -5,6 +5,7 @@ import { In, Repository } from 'typeorm';
 import { CreateHabitDto } from 'src/common/dto/create-habit.dto';
 import { UpdateHabitDto } from 'src/common/dto/update-habit.dto';
 import { User } from '../users/entities/user.entity';
+import { Goal } from '../goal/entities/goal.entity';
 
 @Injectable()
 export class HabitsService {
@@ -13,9 +14,12 @@ export class HabitsService {
     private readonly habitRepository: Repository<Habit>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Goal)
+    private readonly goalRepository: Repository<Goal>,
   ) {}
 
   async create(createHabitDto: CreateHabitDto): Promise<Habit> {
+    debugger;
     const user = await this.userRepository.findOne({
       where: { id: createHabitDto.userId },
     });
@@ -24,15 +28,28 @@ export class HabitsService {
       throw new NotFoundException('User not found');
     }
 
+    const goal = await this.goalRepository.findOne({
+      where: { id: createHabitDto.goal.id },
+    });
+
+    console.log(goal);
+
+    if (!goal) {
+      throw new NotFoundException('Goal not found');
+    }
+
     const habit = this.habitRepository.create({
       ...createHabitDto,
       user,
+      goal,
     });
     return this.habitRepository.save(habit);
   }
 
   async findAll(): Promise<Habit[]> {
-    return this.habitRepository.find();
+    return this.habitRepository.find({
+      relations: ['user', 'goal'],
+    });
   }
 
   async findOne(id: string): Promise<Habit> {
@@ -40,10 +57,24 @@ export class HabitsService {
   }
 
   async update(id: string, updateHabitDto: UpdateHabitDto): Promise<Habit> {
+    debugger
     const habit = await this.findOne(id);
     if (!habit) {
       throw new NotFoundException(`Habit with Id ${id} not found`);
     }
+
+    if (updateHabitDto.goal.id) {
+      const goal = await this.goalRepository.findOne({
+        where: { id: updateHabitDto.goal.id },
+      });
+      if (!goal) {
+        throw new NotFoundException(
+          `Goal with Id ${updateHabitDto.goal.id} not found`,
+        );
+      }
+      habit.goal = goal;
+    }
+
     Object.assign(habit, updateHabitDto);
     return this.habitRepository.save(habit);
   }

@@ -27,7 +27,7 @@ export class GoalService {
 
     const goal = this.goalRepository.create({
       ...createGoalDto,
-      habit,
+      habits: [habit],
     });
 
     return this.goalRepository.save(goal);
@@ -35,13 +35,14 @@ export class GoalService {
 
   findAll(): Promise<Goal[]> {
     return this.goalRepository.find({
-      relations: ['habit'],
+      relations: ['habits'],
     });
   }
 
   findOne(id: string): Promise<Goal> {
     return this.goalRepository.findOne({
       where: { id },
+      relations: ['habits'],
     });
   }
 
@@ -59,7 +60,7 @@ export class GoalService {
         throw new NotFoundException('Habit not found');
       }
 
-      goal.habit = habit;
+      goal.habits = [...goal.habits, habit];
     }
 
     Object.assign(goal, updateGoalDto);
