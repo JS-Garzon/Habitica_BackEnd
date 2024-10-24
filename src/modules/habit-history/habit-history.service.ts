@@ -51,7 +51,6 @@ export class HabitHistoryService {
     if (filters.startDate && filters.endDate) {
       const startDate = parseISO(filters.startDate);
       const endDate = parseISO(filters.endDate);
-      console.log(startDate, endDate);
       if (!isValid(startDate) || !isValid(endDate)) {
         throw new BadRequestException(
           'Las fechas proporcionadas no son válidas.',

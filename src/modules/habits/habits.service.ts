@@ -19,7 +19,7 @@ export class HabitsService {
   ) {}
 
   async create(createHabitDto: CreateHabitDto): Promise<Habit> {
-    debugger;
+    ;
     const user = await this.userRepository.findOne({
       where: { id: createHabitDto.userId },
     });
@@ -31,8 +31,6 @@ export class HabitsService {
     const goal = await this.goalRepository.findOne({
       where: { id: createHabitDto.goal.id },
     });
-
-    console.log(goal);
 
     if (!goal) {
       throw new NotFoundException('Goal not found');
@@ -57,7 +55,6 @@ export class HabitsService {
   }
 
   async update(id: string, updateHabitDto: UpdateHabitDto): Promise<Habit> {
-    debugger
     const habit = await this.findOne(id);
     if (!habit) {
       throw new NotFoundException(`Habit with Id ${id} not found`);

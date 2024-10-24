@@ -16,7 +16,6 @@ export class GoalService {
   ) {}
   //change
   async createGoal(createGoalDto: CreateGoalDto): Promise<Goal> {
-    console.log(createGoalDto);
     const habit = await this.habitRepository.findOne({
       where: { id: createGoalDto.habitId },
     });
@@ -64,7 +63,6 @@ export class GoalService {
     }
 
     Object.assign(goal, updateGoalDto);
-    console.log(goal);
     return this.goalRepository.save(goal);
   }
 
